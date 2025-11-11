@@ -15,7 +15,7 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent { label 'jenkins' }
+            agent any
             steps {
                 checkout scm
             }
@@ -47,7 +47,7 @@ pipeline {
         }
 
         stage('Configure Azure Web App') {
-            agent { label 'jenkins' }
+            agent any
             steps {
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
                                  azureServicePrincipal(credentialsId: 'azure-sp')]) {
@@ -72,7 +72,7 @@ pipeline {
         }
 
         stage('Health Check') {
-            agent { label 'jenkins' }
+            agent any
             steps {
                 sh """
                 echo 'Running health check...'
