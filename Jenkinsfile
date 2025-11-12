@@ -49,22 +49,32 @@ pipeline {
         stage('Configure Azure Web App') {
             agent any
             steps {
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
-                                 azureServicePrincipal(credentialsId: 'azure-sp')]) {
+                withCredentials([
+                    string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
+                    azureServicePrincipal(credentialsId: 'azure-sp')
+                ]) {
                     sh """
+                    echo 'Authenticating to Azure...'
+                    az login --service-principal \\
+                      --username \$AZURE_CLIENT_ID \\
+                      --password \$AZURE_CLIENT_SECRET \\
+                      --tenant \$AZURE_TENANT_ID
+
+                    az account set --subscription \$AZURE_SUBSCRIPTION_ID
+
                     echo 'Configuring container image on Azure Web App...'
-                    az webapp config container set \
-                      --resource-group ${AZURE_RG} \
-                      --name ${AZURE_APP} \
-                      --docker-custom-image-name ${IMAGE} \
-                      --docker-registry-server-url https://ghcr.io \
-                      --docker-registry-server-user vince-cbaov \
-                      --docker-registry-server-password \$GITHUB_TOKEN
+                    az webapp config container set \\
+                      --resource-group ${AZURE_RG} \\
+                      --name ${AZURE_APP} \\
+                      --container-image-name ${IMAGE} \\
+                      --container-registry-url https://ghcr.io \\
+                      --container-registry-user vince-cbaov \\
+                      --container-registry-password \$GITHUB_TOKEN
 
                     echo 'Setting WEBSITES_PORT=${APP_PORT}...'
-                    az webapp config appsettings set \
-                      --resource-group ${AZURE_RG} \
-                      --name ${AZURE_APP} \
+                    az webapp config appsettings set \\
+                      --resource-group ${AZURE_RG} \\
+                      --name ${AZURE_APP} \\
                       --settings WEBSITES_PORT=${APP_PORT}
                     """
                 }
