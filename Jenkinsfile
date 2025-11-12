@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        IMAGE_NAME      = "ghcr.io/vfalconer/vinlabs-python-app"
+        IMAGE_NAME      = "ghcr.io/vince-cbaov/vinlabs-python-app"
         IMAGE_TAG       = "latest"
         IMAGE           = "${IMAGE_NAME}:${IMAGE_TAG}"
 
