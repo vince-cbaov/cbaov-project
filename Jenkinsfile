@@ -37,7 +37,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
                     sh """
                     echo 'Logging into GHCR...'
-                    echo \$GITHUB_TOKEN | docker login ghcr.io -u vfalconer --password-stdin
+                    echo \$GITHUB_TOKEN | docker login ghcr.io -u vince-cbaov --password-stdin
                     echo 'Pushing ${IMAGE}...'
                     docker push ${IMAGE}
                     docker logout ghcr.io
@@ -58,7 +58,7 @@ pipeline {
                       --name ${AZURE_APP} \
                       --docker-custom-image-name ${IMAGE} \
                       --docker-registry-server-url https://ghcr.io \
-                      --docker-registry-server-user vfalconer \
+                      --docker-registry-server-user vince-cbaov \
                       --docker-registry-server-password \$GITHUB_TOKEN
 
                     echo 'Setting WEBSITES_PORT=${APP_PORT}...'
